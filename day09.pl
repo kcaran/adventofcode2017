@@ -9,6 +9,12 @@ use warnings;
 
 { package Stream;
 
+  sub junk {
+   my $self = shift;
+
+   return $self->{ junk };
+  }
+
   sub score {
    my $self = shift;
 
@@ -32,14 +38,18 @@ use warnings;
        next;
       }
 
-     if ($next_char eq '<') {
+     if (!$in_junk && $next_char eq '<') {
        $in_junk = 1;
+       next;
       }
      elsif ($next_char eq '>') {
        $in_junk = 0;
       }
 
-     next if ($in_junk);
+     if ($in_junk) {
+       $self->{ junk }++;
+       next;
+      }
 
      if ($next_char eq '{') {
        $curr_score++;
@@ -61,6 +71,7 @@ use warnings;
     my $input = shift;
     my $self = {
 		score => 0,
+		junk => 0,
     };
     bless $self, $class;
 
@@ -75,3 +86,4 @@ my $input = $ARGV[0] || die "Please enter the input\n";
 my $stream = Stream->new( $input );
 
 print "The score for the input is ", $stream->score(), "\n";
+print "The amount of garbage for the input is ", $stream->junk(), "\n";
