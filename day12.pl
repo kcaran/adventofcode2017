@@ -23,7 +23,6 @@ use Path::Tiny;
   sub is_connected {
     my ($self, $p1, $p2, $tested) = @_;
 
-print "Testing ($p1, $p2)...\n";
     return 1 if ($p1 == $p2);
 
     return 1 if ($self->{ program }[$p1]{ $p2 });
@@ -35,26 +34,43 @@ print "Testing ($p1, $p2)...\n";
       return 1 if ($self->is_connected( $i, $p2, $tested ));
      }
 
-print "($p1, $p2) is not connected\n";
     return 0;
    }
 
-  sub num_connected {
+  sub connected {
     my ($self, $program) = @_;
 
-    my $num = 0;
+    my $connections = {};
     for (my $i = $program; $i < @{ $self->{ program } }; $i++) {
-      $num++ if ($self->is_connected( $program, $i ));
-print "\n";
+      $connections->{ $i } = 1 if ($self->is_connected( $program, $i ));
      }
 
-    return $num;
+    return $connections
+   }
+
+  sub num_groups {
+    my ($self) = @_;
+    my $groups = [];
+
+    for (my $i = 0; $i < @{ $self->{ program } }; $i++) {
+      # Check if in any groups
+      my $in_group = 0;
+      for my $g (@{ $groups }) {
+        if ($g->{ $i }) {
+          $in_group = 1;
+          last;
+         }
+       }
+      next if ($in_group);
+      push @{ $groups }, $self->connected( $i );
+     }
+
+    return scalar @{ $groups };
    }
 
   sub parse_connection {
     my ($self, $connect) = @_;
 
-print "Parsing $connect\n";
     my ($program, $others) = $connect =~ /^(\d+)\s+<->\s*(.*)$/;
 
     for my $other ( split /\s*,\s*/, $others ) {
@@ -85,8 +101,9 @@ my $input_file = $ARGV[0] || 'input12.txt';
 my @input = path( $input_file )->lines_utf8();
 
 my $pipes = Pipes->new( \@input );
-my $connections = $pipes->num_connected( 0 );
+my $connections = $pipes->connected( 0 );
 
-print "The number of programs connected to 0 is ", $connections, "\n";
+print "The number of programs connected to 0 is ", scalar keys %{ $connections }, "\n";
 
+print "The number of groups is ", $pipes->num_groups(), "\n";
 exit;
