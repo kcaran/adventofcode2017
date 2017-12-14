@@ -100,12 +100,9 @@ sub parse_input
   return [ unpack 'C*', $input ];
  }
 
-my ($knots, $input_file) = @ARGV;
+my ($knots, $input) = @ARGV;
 
 my $rope = Rope->new( $knots );
-
-my $input = path( $input_file )->slurp_utf8();
-chomp $input;
 
 my @salt = ( 17, 31, 73, 47, 23 );
 
@@ -117,6 +114,6 @@ for (my $i = 0; $i < 64; $i++) {
   $rope->parse_lengths( $lengths );
  }
 
-print "The hash is ", $rope->hash(), "\n";
+print $rope->hash();
 
 exit;

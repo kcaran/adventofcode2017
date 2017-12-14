@@ -9,14 +9,13 @@ sub count_squares
  {
   my ($input) = @_;
 
-  my $count = 0;
+  my $binary = '';
 
   for my $char (split '', $input) {
-    my $binary = sprintf "%b", hex( $char );
-    $count += scalar grep { $_ } split '', $binary;
+    $binary .= sprintf "%b", hex( $char );
    }
 
-  return $count;
+  return scalar grep { $_ } split '', $binary;
  }
 
 my $num_hashes = 128;
