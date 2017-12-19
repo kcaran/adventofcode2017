@@ -95,6 +95,7 @@ use Path::Tiny;
 
       &{ $move{ $self->{ dir } } }( $self );
       $self->{ dir } = '' if ($self->{ on_letter } && $self->curr() eq ' ');
+      $self->{ steps }++;
      }
   }
 
@@ -107,6 +108,7 @@ use Path::Tiny;
       col => '',
       dir => 'd',
       on_letter => 0,
+      steps => 0,
     };
     bless $self, $class;
 
@@ -129,4 +131,5 @@ $maze->go();
 
 print "The letters seen are $maze->{ letters }\n";
 
+print "It took $maze->{ steps } steps\n";
 exit;
