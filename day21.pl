@@ -187,11 +187,12 @@ use Path::Tiny;
 }
 
 my $input_file = $ARGV[0] || 'input21.txt';
+my $iterations = $ARGV[1] || 5;
 my @input = path( $input_file )->lines_utf8( { chomp => 1 } );
 
 my $rules = Rules->new( @input );
 
-for (my $i = 0; $i < 5; $i++) {
+for (my $i = 0; $i < $iterations; $i++) {
   $rules->go();
  }
 
