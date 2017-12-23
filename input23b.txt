@@ -1,0 +1,33 @@
+set a 0
+set b 67
+set c b
+jnz a 2
+jnz 1 5
+mul b 100
+sub b -100000
+set c b
+sub c -17000
+set f 1 # Loop 3
+set d 2
+set e 2 # Loop 2
+set g d # Loop 1
+mul g e
+sub g b
+jnz g 2
+set f 0
+sub e -1
+set g e
+sub g b
+jnz g -8 # Loop 1
+sub d -1
+set g d
+sub g b
+jnz g -13 # Loop 2
+jnz f 2
+sub h -1
+set g b
+sub g c
+jnz g 2
+jnz 1 3
+sub b -17
+jnz 1 -23 # Loop 3

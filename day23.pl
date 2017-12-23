@@ -5,6 +5,7 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
 use Path::Tiny;
 
 my $queue = [ [], [] ];
@@ -28,14 +29,18 @@ my $queue_rcv = [ 0, 0 ];
 			}
 			return;
 		},
+		'pnt' => sub {
+          print Data::Dumper::Dumper( $_[0]->{ regs } );
+          return;
+        }
 	};
 
   sub parse_cmd {
     my ($self, $cmd_line) = @_;
 
-    my ($cmd, $var1, $var2) = ($cmd_line =~ /^(\S+)\s+(\S+)(?:\s+(\S+))?$/);
+    my ($cmd, $var1, $var2) = ($cmd_line =~ /^(\S+)\s+(\S+)(?:\s+(\S+))/);
 
-    die "Illegal instruction $cmd" unless ($cmd_table->{ $cmd });
+    die "Illegal instruction $cmd_line" unless ($cmd_table->{ $cmd });
 
     return { cmd => $cmd, var1 => $var1, var2 => $var2 };
    }
@@ -83,7 +88,6 @@ my $queue_rcv = [ 0, 0 ];
     };
     bless $self, $class;
 
-    #$self->{ regs }{ a } = 1;
     for my $cmd (@program) {
       push @{ $self->{ program } }, $self->parse_cmd( $cmd );
      }
@@ -103,5 +107,8 @@ while (!$code->{ end }) {
  }
 
 print "The mul instruction was performed $code->{ mul } times.\n";
+print "The h register is $code->{ regs }{ h }.\n";
+
+print Dumper( $code->{ regs } );
 
 exit;
