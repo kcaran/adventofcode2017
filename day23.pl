@@ -83,7 +83,7 @@ my $queue_rcv = [ 0, 0 ];
     };
     bless $self, $class;
 
-    $self->{ regs }{ p } = $num;
+    #$self->{ regs }{ a } = 1;
     for my $cmd (@program) {
       push @{ $self->{ program } }, $self->parse_cmd( $cmd );
      }
@@ -92,7 +92,7 @@ my $queue_rcv = [ 0, 0 ];
   }
 }
 
-my $input_file = $ARGV[0] || 'input18.txt';
+my $input_file = $ARGV[0] || 'input23.txt';
 
 my @input = path( $input_file )->lines_utf8( { chomp => 1 } );
 
