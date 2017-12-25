@@ -8,6 +8,8 @@ use warnings;
 use Data::Dumper;
 use Path::Tiny;
 
+$Data::Dumper::Sortkeys = 1;
+
 my $queue = [ [], [] ];
 my $queue_cnt = [ 0, 0 ];
 my $queue_rcv = [ 0, 0 ];
