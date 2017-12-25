@@ -8,8 +8,6 @@ use warnings;
 use List::MoreUtils qw( distinct );
 use Path::Tiny;
 
-my $bridges = [];
-
 { package Components;
 
 use Data::Dumper;
@@ -66,11 +64,26 @@ $Data::Dumper::Sortkeys = 1;
     return $score;
   }
 
-  sub strongest {
-    my ($self) = @_;
+  sub longest {
+    my ($self, $bridges) = @_;
+
+    my @sorted = sort { keys %{ $b } <=> keys %{ $a } } @{ $bridges };
     my $top_score = 0;
 
-    my $bridges = $self->bridges();
+    my $longest = keys %{ $sorted[0] };
+    my $cnt = 0;
+    while (keys %{ $sorted[$cnt] } == $longest) {
+      my $score = $self->score( $sorted[$cnt] );
+      $top_score = $score if ($score > $top_score);
+      $cnt++;
+     }
+
+    return $top_score;
+   }
+
+  sub strongest {
+    my ($self, $bridges) = @_;
+    my $top_score = 0;
 
     for my $b (@{ $bridges }) {
       my $score = $self->score( $b );
@@ -109,6 +122,10 @@ my @input = path( $input_file )->lines_utf8( { chomp => 1 } );
 
 my $components = Components->new( @input );
 
-print "The strongest bridge is ", $components->strongest(), "\n";
+my $bridges = $components->bridges();
+
+print "The strongest bridge is ", $components->strongest( $bridges ), "\n";
+
+print "The strength of the longest bridge is ", $components->longest( $bridges ), "\n";
 
 exit;
